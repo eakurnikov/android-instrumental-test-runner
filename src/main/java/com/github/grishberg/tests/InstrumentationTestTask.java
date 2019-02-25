@@ -5,8 +5,8 @@ import com.android.build.gradle.internal.test.report.TestReport;
 import com.android.build.gradle.internal.test.report.TestReportExt;
 import com.android.ddmlib.AndroidDebugBridge;
 import com.github.grishberg.tests.adb.AdbWrapper;
+import com.github.grishberg.tests.commands.CommandExecutionException;
 import com.github.grishberg.tests.commands.DeviceRunnerCommandProvider;
-import com.github.grishberg.tests.commands.ExecuteCommandException;
 import com.github.grishberg.tests.common.RunnerLogger;
 import com.github.grishberg.tests.sharding.DefaultDeviceTypeAdapter;
 import com.github.grishberg.tests.sharding.DeviceTypeAdapter;
@@ -47,6 +47,8 @@ public class InstrumentationTestTask extends DefaultTask {
     private AdbWrapper adbWrapper;
     private RunnerLogger logger;
     private DeviceTypeAdapter deviceTypeAdapter;
+    @Nullable
+    private ProcessCrashHandler processCrashHandler;
 
     public InstrumentationTestTask() {
         instrumentationInfo = getProject().getExtensions()
@@ -62,7 +64,7 @@ public class InstrumentationTestTask extends DefaultTask {
     }
 
     @TaskAction
-    public void runTask() throws InterruptedException, IOException, ExecuteCommandException {
+    public void runTask() throws InterruptedException, IOException, CommandExecutionException {
         logger.i(TAG, "InstrumentationTestTask.runTask");
 
         androidSdkPath = instrumentationInfo.getAndroidSdkPath();
@@ -79,6 +81,9 @@ public class InstrumentationTestTask extends DefaultTask {
         HashMap<String, String> screenshotRelations = new HashMap<>();
         TestRunnerContext context = new TestRunnerContext(instrumentationInfo,
                 environment, screenshotRelations, logger);
+        if (processCrashHandler != null) {
+            context.setProcessCrashHandler(processCrashHandler);
+        }
         boolean success = false;
         try {
             success = runner.runCommands(getDeviceList(), context);
@@ -224,5 +229,9 @@ public class InstrumentationTestTask extends DefaultTask {
 
     public void setRunnerLogger(RunnerLogger logger) {
         this.logger = logger;
+    }
+
+    public void setProcessCrashHandler(ProcessCrashHandler handler) {
+        processCrashHandler = handler;
     }
 }
