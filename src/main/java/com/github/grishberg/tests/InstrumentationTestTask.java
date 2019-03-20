@@ -5,8 +5,8 @@ import com.android.build.gradle.internal.test.report.TestReport;
 import com.android.build.gradle.internal.test.report.TestReportExt;
 import com.android.ddmlib.AndroidDebugBridge;
 import com.github.grishberg.tests.adb.AdbWrapper;
+import com.github.grishberg.tests.commands.CommandExecutionException;
 import com.github.grishberg.tests.commands.DeviceRunnerCommandProvider;
-import com.github.grishberg.tests.commands.ExecuteCommandException;
 import com.github.grishberg.tests.common.RunnerLogger;
 import com.github.grishberg.tests.sharding.DefaultDeviceTypeAdapter;
 import com.github.grishberg.tests.sharding.DeviceTypeAdapter;
@@ -62,7 +62,7 @@ public class InstrumentationTestTask extends DefaultTask {
     }
 
     @TaskAction
-    public void runTask() throws InterruptedException, IOException, ExecuteCommandException {
+    public void runTask() throws InterruptedException, IOException, CommandExecutionException {
         logger.i(TAG, "InstrumentationTestTask.runTask");
 
         androidSdkPath = instrumentationInfo.getAndroidSdkPath();
@@ -74,7 +74,7 @@ public class InstrumentationTestTask extends DefaultTask {
         Environment environment = new Environment(getResultsDir(),
                 getReportsDir(), getCoverageDir());
         DeviceCommandsRunner runner = deviceCommandsRunnerFabric
-                .provideDeviceCommandRunner(commandProvider);
+                .provideDeviceCommandRunner(logger, commandProvider);
 
         HashMap<String, String> screenshotRelations = new HashMap<>();
         TestRunnerContext context = new TestRunnerContext(instrumentationInfo,
