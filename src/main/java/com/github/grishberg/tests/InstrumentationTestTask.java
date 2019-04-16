@@ -47,6 +47,7 @@ public class InstrumentationTestTask extends DefaultTask {
     private AdbWrapper adbWrapper;
     private RunnerLogger logger;
     private DeviceTypeAdapter deviceTypeAdapter;
+    private ProcessCrashHandler processCrashHandler;
 
     public InstrumentationTestTask() {
         instrumentationInfo = getProject().getExtensions()
@@ -79,6 +80,9 @@ public class InstrumentationTestTask extends DefaultTask {
         HashMap<String, String> screenshotRelations = new HashMap<>();
         TestRunnerContext context = new TestRunnerContext(instrumentationInfo,
                 environment, screenshotRelations, logger);
+        if (processCrashHandler != null) {
+            context.setProcessCrashHandler(processCrashHandler);
+        }
         boolean success = false;
         try {
             success = runner.runCommands(getDeviceList(), context);
@@ -224,5 +228,10 @@ public class InstrumentationTestTask extends DefaultTask {
 
     public void setRunnerLogger(RunnerLogger logger) {
         this.logger = logger;
+    }
+
+    @Input
+    public void setProcessCrashHandler(ProcessCrashHandler handler) {
+        processCrashHandler = handler;
     }
 }
