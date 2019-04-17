@@ -1,5 +1,6 @@
 package com.github.grishberg.tests;
 
+import com.github.grishberg.tests.common.FileLogger;
 import org.gradle.api.Project;
 import org.junit.Test;
 
@@ -16,7 +17,7 @@ public class InstrumentalTaskTest extends BaseTestCaseWithLogger {
 
     @Test
     public void executeTask() throws Exception {
-        InstrumentalPluginExtension ext = project.getExtensions().findByType(InstrumentalPluginExtension.class);
+        InstrumentalExtension ext = project.getExtensions().findByType(InstrumentalExtension.class);
         ext.setFlavorName("TEST_FLAVOR");
         ext.setApplicationId("com.github.grishberg.instrumentaltestsample");
         ext.setCoverageEnabled(true);
@@ -24,6 +25,7 @@ public class InstrumentalTaskTest extends BaseTestCaseWithLogger {
         ext.setInstrumentalRunner("android.support.test.runner.AndroidJUnitRunner");
 
         InstrumentationTestTask task = provideTask();
+        task.setRunnerLogger(new FileLogger());
 
         task.runTask();
     }

@@ -3,11 +3,9 @@ package com.github.grishberg.tests
 import com.github.grishberg.tests.adb.AdbWrapper
 import com.github.grishberg.tests.common.DefaultGradleLogger
 import com.github.grishberg.tests.common.RunnerLogger
-import com.github.grishberg.tests.planner.InstrumentalTestPlanProvider
 import com.github.grishberg.tests.planner.PackageTreeGenerator
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-
 /**
  * Plugin for testing.
  */
@@ -30,10 +28,9 @@ class InstrumentalTestPlugin implements Plugin<Project> {
 
         RunnerLogger logger = new DefaultGradleLogger(project.getLogger())
         PackageTreeGenerator packageTreeGenerator = new PackageTreeGenerator()
-        InstrumentalTestPlanProvider testPlanProvider = new InstrumentalTestPlanProvider(
-                propertiesFromGradleArguments(project), extension, packageTreeGenerator, logger)
+        def arguments = propertiesFromGradleArguments(project)
         DeviceCommandsRunnerFabric deviceCommandsRunnerFabric = new DeviceCommandsRunnerFabric(
-                testPlanProvider)
+                arguments, extension, packageTreeGenerator)
         AdbWrapper adbWrapper = new AdbWrapper()
         task.initAfterApply(adbWrapper, deviceCommandsRunnerFabric, logger)
     }
