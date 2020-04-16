@@ -74,8 +74,7 @@ public class InstrumentationTestTask extends DefaultTask {
 
         Environment environment = new Environment(getResultsDir(),
                 getReportsDir(), getCoverageDir());
-        DeviceCommandsRunner runner = deviceCommandsRunnerFabric
-                .provideDeviceCommandRunner(logger, commandProvider);
+        DeviceCommandsRunner runner = deviceCommandsRunnerFabric.provideDeviceCommandRunner(commandProvider);
 
         HashMap<String, String> screenshotRelations = new HashMap<>();
         TestRunnerContext context = new TestRunnerContext(instrumentationInfo,
@@ -143,7 +142,7 @@ public class InstrumentationTestTask extends DefaultTask {
         if (commandProvider == null) {
             logger.i(TAG, "command provider is empty, use DefaultCommandProvider");
             commandProvider = new DefaultCommandProvider(getProject().getName(),
-                    instrumentationArgsProvider, commandsForAnnotationProvider, logger);
+                    instrumentationArgsProvider, commandsForAnnotationProvider);
         }
     }
 
