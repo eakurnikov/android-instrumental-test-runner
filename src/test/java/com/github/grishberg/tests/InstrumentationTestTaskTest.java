@@ -34,7 +34,7 @@ public class InstrumentationTestTaskTest {
     @Mock
     AdbWrapper adbWrapper;
     @Mock
-    DeviceCommandsRunnerFabric deviceCommandsRunnerFabric;
+    DeviceCommandsRunnerFactory deviceCommandsRunnerFactory;
     @Mock
     RunnerLogger logger;
     @Mock
@@ -53,10 +53,10 @@ public class InstrumentationTestTaskTest {
     public void setUp() throws Exception {
         List<ConnectedDeviceWrapper> devicesList = Arrays.asList(deviceWrapper);
         when((adbWrapper.provideDevices())).thenReturn(devicesList);
-        when(deviceCommandsRunnerFabric.provideDeviceCommandRunner(any(DeviceRunnerCommandProvider.class)))
+        when(deviceCommandsRunnerFactory.provideDeviceCommandRunner(any(DeviceRunnerCommandProvider.class)))
                 .thenReturn(runner);
         when(runner.runCommands(eq(devicesList), any(TestRunnerContext.class))).thenReturn(true);
-        task.initAfterApply(adbWrapper, deviceCommandsRunnerFabric, logger);
+        task.initAfterApply(adbWrapper, deviceCommandsRunnerFactory, logger);
     }
 
     private InstrumentationTestTask provideTask() {
@@ -144,6 +144,6 @@ public class InstrumentationTestTaskTest {
 
         verify(adbWrapper).init(ADB_PATH, logger);
         verify(adbWrapper).waitForAdb();
-        verify(deviceCommandsRunnerFabric).provideDeviceCommandRunner(any(DeviceRunnerCommandProvider.class));
+        verify(deviceCommandsRunnerFactory).provideDeviceCommandRunner(any(DeviceRunnerCommandProvider.class));
     }
 }
