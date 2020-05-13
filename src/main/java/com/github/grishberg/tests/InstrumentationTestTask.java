@@ -43,7 +43,7 @@ public class InstrumentationTestTask extends DefaultTask {
     private InstrumentationArgsProvider instrumentationArgsProvider;
     private InstrumentalExtension instrumentationInfo;
     private CommandsForAnnotationProvider commandsForAnnotationProvider;
-    private DeviceCommandsRunnerFabric deviceCommandsRunnerFabric;
+    private DeviceCommandsRunnerFactory deviceCommandsRunnerFactory;
     private AdbWrapper adbWrapper;
     private RunnerLogger logger;
     private DeviceTypeAdapter deviceTypeAdapter;
@@ -55,10 +55,10 @@ public class InstrumentationTestTask extends DefaultTask {
     }
 
     void initAfterApply(AdbWrapper adbWrapper,
-                        DeviceCommandsRunnerFabric deviceCommandsRunnerFabric,
+                        DeviceCommandsRunnerFactory deviceCommandsRunnerFactory,
                         RunnerLogger logger) {
         this.adbWrapper = adbWrapper;
-        this.deviceCommandsRunnerFabric = deviceCommandsRunnerFabric;
+        this.deviceCommandsRunnerFactory = deviceCommandsRunnerFactory;
         this.logger = logger;
     }
 
@@ -74,7 +74,7 @@ public class InstrumentationTestTask extends DefaultTask {
 
         Environment environment = new Environment(getResultsDir(),
                 getReportsDir(), getCoverageDir());
-        DeviceCommandsRunner runner = deviceCommandsRunnerFabric.provideDeviceCommandRunner(commandProvider);
+        DeviceCommandsRunner runner = deviceCommandsRunnerFactory.provideDeviceCommandRunner(commandProvider);
 
         HashMap<String, String> screenshotRelations = new HashMap<>();
         TestRunnerContext context = new TestRunnerContext(instrumentationInfo,
@@ -136,7 +136,7 @@ public class InstrumentationTestTask extends DefaultTask {
                 deviceTypeAdapter = new DefaultDeviceTypeAdapter();
             }
             instrumentationArgsProvider = new DefaultInstrumentationArgsProvider(
-                    instrumentationInfo, new ShardArgumentsImpl(adbWrapper, logger, deviceTypeAdapter));
+                    instrumentationInfo, new ShardArgumentsImpl(adbWrapper, deviceTypeAdapter));
             logger.i(TAG, "init: instrumentationArgsProvider is empty, use DefaultInstrumentationArgsProvider");
         }
         if (commandProvider == null) {

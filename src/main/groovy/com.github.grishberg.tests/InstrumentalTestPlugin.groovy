@@ -29,7 +29,7 @@ class InstrumentalTestPlugin implements Plugin<Project> {
         RunnerLogger logger = new DefaultGradleLogger(project.getLogger())
         PackageTreeGenerator packageTreeGenerator = new PackageTreeGenerator()
         def arguments = propertiesFromGradleArguments(project)
-        DeviceCommandsRunnerFabric deviceCommandsRunnerFabric = new DeviceCommandsRunnerFabric(
+        DeviceCommandsRunnerFactory deviceCommandsRunnerFabric = new DeviceCommandsRunnerFactory(
                 arguments, extension, packageTreeGenerator)
         AdbWrapper adbWrapper = new AdbWrapper()
         task.initAfterApply(adbWrapper, deviceCommandsRunnerFabric, logger)
