@@ -86,7 +86,9 @@ public class InstrumentationTestTask extends DefaultTask {
         try {
             success = runner.runCommands(getDeviceList(), context);
         } finally {
-            generateHtmlReport(success, screenshotRelations);
+            if (instrumentationInfo.isHtmlReportsEnabled()) {
+                generateHtmlReport(success, screenshotRelations);
+            }
         }
     }
 
